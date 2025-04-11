@@ -1,18 +1,39 @@
 #include "sort.h"
 
 /**
- * lomuto_partition - Partitions the array using the Lomuto scheme
- * @array: The array to sort
- * @low: The starting index of the partition
- * @high: The ending index of the partition
- * @size: Size of the full array (for printing)
+ * swap - A function that swap 2 integers
  *
- * Return: The final index of the pivot
+ * @a: First integer
+ * @b: Second integer
  */
-int lomuto_partition(int *array, int low, int high, size_t size)
+
+void swap(int *a, int *b)
+{
+	int tmp;
+
+	if (a != b)
+	{
+		tmp = *a;
+		*a = *b;
+		*b = tmp;
+	}
+}
+
+/**
+ * lomuto - A function that finds the pivot point
+ *
+ * @array: The array to treat
+ * @size:The size of the array
+ * @low: The low point
+ * @high: The high point
+ *
+ * Return: The Lomuto point
+ */
+
+int lomuto(int *array, size_t size, int low, int high)
 {
 	int pivot = array[high];
-	int i = low, j, tmp;
+	int i = low, j;
 
 	for (j = low; j < high; j++)
 	{
@@ -20,52 +41,53 @@ int lomuto_partition(int *array, int low, int high, size_t size)
 		{
 			if (i != j)
 			{
-				tmp = array[i];
-				array[i] = array[j];
-				array[j] = tmp;
+				swap(&array[i], &array[j]);
 				print_array(array, size);
 			}
 			i++;
 		}
 	}
-	if (i != high)
+	if (array[i] != array[high])
 	{
-		tmp = array[i];
-		array[i] = array[high];
-		array[high] = tmp;
+		swap(&array[i], &array[high]);
 		print_array(array, size);
 	}
 	return (i);
 }
 
 /**
- * quick_sort_rec - Recursive quicksort helper
- * @array: The array to sort
- * @low: Start index
- * @high: End index
- * @size: Size of the array
+ * quicksort_rec - A function to sort recursively an array of int
+ *
+ * @array: A pointer to the first element of the array
+ * @size: The size of the array
+ * @low: The low point
+ * @high: The high point
  */
-void quick_sort_rec(int *array, int low, int high, size_t size)
+
+void quicksort_rec(int *array, size_t size, int low, int high)
 {
-	int pi;
+	int pivot_index;
 
 	if (low < high)
 	{
-		pi = lomuto_partition(array, low, high, size);
-		quick_sort_rec(array, low, pi - 1, size);
-		quick_sort_rec(array, pi + 1, high, size);
+		pivot_index = lomuto(array, size, low, high);
+		quicksort_rec(array, size, low, pivot_index - 1);
+		quicksort_rec(array, size, pivot_index + 1, high);
 	}
 }
 
 /**
- * quick_sort - Sorts an array of integers using the Quick sort algorithm
- * @array: The array to sort
- * @size: Size of the array
+ * quick_sort - A function that sorts an array of integers
+ *				in ascending order usig the quick sort algorithm
+ *
+ * @array: A ponter to the first element of the array to sort
+ * @size: The size of the array
  */
+
 void quick_sort(int *array, size_t size)
 {
-	if (array == NULL || size < 2)
+	if (!array || size < 2)
 		return;
 
-	quick_sort_rec(array, 0, size - 1, size);
+	quicksort_rec(array, size, 0, size - 1);
 }
